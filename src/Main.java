@@ -27,6 +27,8 @@ public class Main {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+
+        System.out.println(generateName());
     }
 
     public static int  countSpecificString(String specificString){
@@ -96,6 +98,7 @@ public class Main {
             generated += findHighestProbabilityLetterByIndex(index, previousLetter);
             previousLetter = generated.charAt(index);
         }
+        generated = generated.toUpperCase().charAt(0) + generated.substring(1);
         return generated;
     }
 
@@ -105,10 +108,12 @@ public class Main {
             charsAppearence.put(String.valueOf((char)(index + A_ASCII_VALUE)), 0);
         }
           for (String name : names) {
+              name = name.toLowerCase();
               if (name.length() > indexInString) {
                   if (indexInString == 0 || name.charAt(indexInString - 1) == previousLetter) {
-                      char currentChar = name.charAt(indexInString);
-                      charsAppearence.put(String.valueOf(currentChar), charsAppearence.get(currentChar) + 1);
+                      char current = name.charAt(indexInString);
+                      String currentChar = String.valueOf(current);
+                      charsAppearence.put(currentChar, charsAppearence.get(currentChar) + 1);
                   }
               }
           }
