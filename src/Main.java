@@ -5,7 +5,10 @@ import java.util.*;
 public class Main {
 
     public static String FILE_NAME = "names.txt";
+    public static int ENGLISH_ALPHABET_LENGTH = 26;
+    public static char A_ASCII_VALUE = 97;
     public static Set<String> names = new HashSet<>();
+    public static int longestLength = 0;
     public static void main(String[] args)
     {
         File namesFile = new File(FILE_NAME);
@@ -13,6 +16,8 @@ public class Main {
             BufferedReader fileReader = new BufferedReader(new FileReader(namesFile));
             String name = fileReader.readLine();
             while(name != null){
+                if(longestLength < name.length())
+                    longestLength = name.length();
                 names.add(name);
                 name = fileReader.readLine();
             }
@@ -57,10 +62,11 @@ public class Main {
         for (String name: names)
             namesCaseInsensitive.add(name.toLowerCase());
         HashMap<String, Integer> appearanceMap = countAllStringsByCaseSensitive(length, namesCaseInsensitive);
-        return mostCommonKey(appearanceMap, length);
+        return mostCommonKey(appearanceMap);
     }
 
-    public static List<String> mostCommonKey(HashMap<String, Integer> appearanceMap, int length){
+
+    public static List<String> mostCommonKey(HashMap<String, Integer> appearanceMap){
         List<String> mostCommonStrings = new LinkedList<>();
         int most = 0 ;
         for(Integer counter : appearanceMap.values()){
@@ -84,15 +90,29 @@ public class Main {
     }
 
     public static String generateName(){
-        return "";
+        String generated = "";
+        char previousLetter = '\0';
+        for (int index = 0; index < longestLength; index++){
+            generated += findHighestProbabilityLetterByIndex(index, previousLetter);
+            previousLetter = generated.charAt(index);
+        }
+        return generated;
     }
 
-    public static String findHighestProbLetter(){
-        HashMap<String,Integer> lettersCount = countAllStrings(1);
-        //HashMap<String, Integer> firstLetter =
-        for(String letter: lettersCount.keySet()){
-
+    public static String findHighestProbabilityLetterByIndex(int indexInString, char previousLetter){
+        HashMap<String, Integer> charsAppearence = new HashMap<>();
+        for (int index = 0; index < ENGLISH_ALPHABET_LENGTH; index++){
+            charsAppearence.put(String.valueOf((char)(index + A_ASCII_VALUE)), 0);
         }
-        return "";
+          for (String name : names) {
+              if (name.length() > indexInString) {
+                  if (indexInString == 0 || name.charAt(indexInString - 1) == previousLetter) {
+                      char currentChar = name.charAt(indexInString);
+                      charsAppearence.put(String.valueOf(currentChar), charsAppearence.get(currentChar) + 1);
+                  }
+              }
+          }
+
+        return mostCommonKey(charsAppearence).get(0);
     }
 }
