@@ -1,101 +1,86 @@
-import com.sun.javafx.scene.traversal.SubSceneTraversalEngine;
-
 import java.io.*;
 import java.util.*;
 
+
 public class Main {
 
+    public static String FILE_NAME = "names.txt";
     public static Set<String> names = new HashSet<>();
     public static void main(String[] args)
     {
-        File file = new File("names.txt");
+        File namesFile = new File(FILE_NAME);
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String st;
-            while((st = br.readLine()) != null){
-                names.add(st);
+            BufferedReader fileReader = new BufferedReader(new FileReader(namesFile));
+            String name = fileReader.readLine();
+            while(name != null){
+                names.add(name);
+                name = fileReader.readLine();
             }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException exception) {
+            exception.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
-
-        /*names.add("Assaf");
-        names.add("Yarden");
-        names.add("Liad");
-        names.add("Israel");
-        names.add("Isral");
-        names.add("a");
-        System.out.println(countSpecificString("a"));
-        System.out.println(countAllStrings(1));
-        System.out.println(countMaxString(1));
-        System.out.println(allIncludesString("mkgddassafbfg"));*/
     }
 
     public static int  countSpecificString(String specificString){
         int counterAppearance = 0;
         for(String name : names){
             if(name.contains(specificString))
-                counterAppearance = counterAppearance +1;
+                counterAppearance++;
         }
         return counterAppearance;
     }
-    public static HashMap<String, Integer> countAllStrings(int length)
+    public static HashMap<String, Integer> countAllStrings(int substringLength)
     {
-       return countAllStringsHelp(length, true);
+       return countAllStringsByCaseSensitive(substringLength, names);
     }
 
-    public static HashMap<String, Integer> countAllStringsHelp(int length, boolean isCaseS)
+    public static HashMap<String, Integer> countAllStringsByCaseSensitive(int substringLength, Set<String> names)
     {
-        HashMap<String, Integer> numAppear = new HashMap<>();
-        Set<String> namesTemp = new HashSet<>();
-        if(!isCaseS){
-            for(String name: names)
-                namesTemp.add(name.toLowerCase());
-        }
-        else
-            namesTemp = names;
-
-        for(String name: namesTemp){
-            for (int i = 0; i < name.length()-length + 1 ; i++) {
-                String substring = name.substring(i, length + i);
-                if (numAppear.containsKey(substring))
-                    numAppear.put(substring, numAppear.get(substring) + 1);
+        HashMap<String, Integer> appearencePerString = new HashMap<>();
+        for(String name: names){
+            for (int index = 0; index < name.length() - substringLength + 1 ; index++) {
+                String substring = name.substring(index, substringLength + index);
+                if (appearencePerString.containsKey(substring))
+                    appearencePerString.put(substring, appearencePerString.get(substring) + 1);
                 else
-                    numAppear.put(substring, 1);
+                    appearencePerString.put(substring, 1);
             }
         }
-        return numAppear;
+        return appearencePerString;
     }
 
     public static List<String> countMaxString(int length){
-        HashMap<String, Integer> appearanceMap = countAllStringsHelp(length, false);
-        return countMaxStringHelp(appearanceMap, length);
+        Set<String> namesCaseInsensitive = new HashSet<>();
+        for (String name: names)
+            namesCaseInsensitive.add(name.toLowerCase());
+        HashMap<String, Integer> appearanceMap = countAllStringsByCaseSensitive(length, namesCaseInsensitive);
+        return mostCommonKey(appearanceMap, length);
     }
 
-    public static List<String> countMaxStringHelp(HashMap<String, Integer> appearanceMap, int length){
-        List<String> mostCommon = new LinkedList<>();
+    public static List<String> mostCommonKey(HashMap<String, Integer> appearanceMap, int length){
+        List<String> mostCommonStrings = new LinkedList<>();
         int most = 0 ;
-        for(Integer count : appearanceMap.values()){
-            if (count > most)
-                most = count;
+        for(Integer counter : appearanceMap.values()){
+            if (counter > most)
+                most = counter;
         }
-        for(String str: appearanceMap.keySet()){
-            if(appearanceMap.get(str) == most)
-                mostCommon.add(str);
+        for(String substringOfSizeLength: appearanceMap.keySet()){
+            if(appearanceMap.get(substringOfSizeLength) == most)
+                mostCommonStrings.add(substringOfSizeLength);
         }
-        return mostCommon;
+        return mostCommonStrings;
     }
     public static List<String> allIncludesString(String string){
-        String string_ci = string.toLowerCase();
-        List<String> namesInStr = new LinkedList<>();
+        String stringCaseInsensitive = string.toLowerCase();
+        List<String> namesInGivenString = new LinkedList<>();
         for(String name: names){
-            if(string_ci.contains(name.toLowerCase()))
-                namesInStr.add(name.toLowerCase());
+            if(stringCaseInsensitive.contains(name.toLowerCase()))
+                namesInGivenString.add(name.toLowerCase());
         }
-        return namesInStr;
+        return namesInGivenString;
     }
 
     public static String generateName(){
