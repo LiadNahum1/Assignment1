@@ -70,6 +70,10 @@ public class Main {
 
     public static List<String> countMaxString(int length){
         HashMap<String, Integer> appearanceMap = countAllStringsHelp(length, false);
+        return countMaxStringHelp(appearanceMap, length);
+    }
+
+    public static List<String> countMaxStringHelp(HashMap<String, Integer> appearanceMap, int length){
         List<String> mostCommon = new LinkedList<>();
         int most = 0 ;
         for(Integer count : appearanceMap.values()){
@@ -82,7 +86,6 @@ public class Main {
         }
         return mostCommon;
     }
-
     public static List<String> allIncludesString(String string){
         String string_ci = string.toLowerCase();
         List<String> namesInStr = new LinkedList<>();
@@ -98,7 +101,11 @@ public class Main {
     }
 
     public static String findHighestProbLetter(){
+        HashMap<String,Integer> lettersCount = countAllStrings(1);
+        //HashMap<String, Integer> firstLetter =
+        for(String letter: lettersCount.keySet()){
 
+        }
         return "";
     }
 }
