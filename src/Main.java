@@ -21,17 +21,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        /*names.add("Assaf");
-        names.add("Yarden");
-        names.add("Liad");
-        names.add("Israel");
-        names.add("Isral");
-        names.add("a");
-        System.out.println(countSpecificString("a"));
-        System.out.println(countAllStrings(1));
-        System.out.println(countMaxString(1));
-        System.out.println(allIncludesString("mkgddassafbfg"));*/
     }
 
     public static int  countSpecificString(String specificString){
