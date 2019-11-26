@@ -120,9 +120,13 @@ public class Main {
     public static String generateName(){
         String generated = "";
         char previousLetter = '\0';
-        for (int index = 0; index < longest_length; index++){
-            generated += findHighestProbabilityLetterByIndex(previousLetter);
-            previousLetter = generated.charAt(index);
+        while(true){
+            String nextChar= findHighestProbabilityLetterByIndex(previousLetter);
+            if(!generated.contains(nextChar)){
+                generated += nextChar;
+                previousLetter = generated.charAt(generated.length() - 1);
+            }
+            else break;
         }
         generated = generated.toUpperCase().charAt(0) + generated.substring(1);
         return generated;
@@ -140,15 +144,20 @@ public class Main {
                   String currentChar = String.valueOf(name.charAt(0));
                   charsAppearence.put(currentChar, charsAppearence.get(currentChar) + 1);
               }
-              else if (name.contains(String.valueOf(previousLetter))){
-                  int indexOfPreviousLetter = name.indexOf(previousLetter);
-                  if (name.length() > indexOfPreviousLetter +1) {
-                      String currentChar = String.valueOf(name.charAt(indexOfPreviousLetter + 1));
-                      charsAppearence.put(currentChar, charsAppearence.get(currentChar) + 1);
+              else {
+                  String substringName = name;
+                  while(substringName.length() > 0 && substringName.contains(String.valueOf(previousLetter))){
+                      int indexOfPreviousLetter = substringName.indexOf(previousLetter);
+                      if (substringName.length() > indexOfPreviousLetter + 1) {
+                          String currentChar = String.valueOf(name.charAt(indexOfPreviousLetter + 1));
+                          charsAppearence.put(currentChar, charsAppearence.get(currentChar) + 1);
+                          substringName = substringName.substring(indexOfPreviousLetter + 1);
+                      }
+                      else
+                          substringName = "";
                   }
               }
           }
-
         return mostCommonKey(charsAppearence).get(0);
     }
 }
