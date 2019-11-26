@@ -4,11 +4,8 @@ import java.util.*;
 
 public class Main {
 
-    public static String FILE_NAME = "names.txt";
-    public static int ENGLISH_ALPHABET_LENGTH = 26;
-    public static char A_ASCII_VALUE = 97;
-    public static Set<String> names = new HashSet<>();
-    public static int longestLength = 0;
+    public static Set<String> n = new HashSet<>();
+    public static int longest_length = 0;
     public static void main(String[] args)
     {
         loadNamesFromFile();
@@ -34,27 +31,27 @@ public class Main {
     }
 
     public static void loadNamesFromFile(){
-        File namesFile = new File(FILE_NAME);
+        File f = new File("n.txt");
         try {
-            BufferedReader fileReader = new BufferedReader(new FileReader(namesFile));
-            String name = fileReader.readLine();
+            BufferedReader fr = new BufferedReader(new FileReader(f));
+            String name = fr.readLine();
             while(name != null){
-                if(longestLength < name.length())
-                    longestLength = name.length();
-                names.add(name);
-                name = fileReader.readLine();
+                if(longest_length < name.length())
+                    longest_length = name.length();
+                n.add(name);
+                name = fr.readLine();
             }
 
-        } catch (FileNotFoundException exception) {
-            exception.printStackTrace();
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public static int countSpecificString(String specificString){
         int counterAppearance = 0;
-        for(String name : names){
+        for(String name : n) {
             if(name.contains(specificString))
                 counterAppearance++;
         }
@@ -62,20 +59,20 @@ public class Main {
     }
 
     public static HashMap<String, Integer> countAllStrings(int substringLength) {
-       return countAllStringsByCaseSensitive(substringLength, names);
+       return funcHelp(substringLength, n);
     }
-    public static HashMap<String, Integer> countAllStringsByCaseSensitive(int substringLength, Set<String> names) {
-        HashMap<String, Integer> appearencePerString = new HashMap<>();
+    public static HashMap<String, Integer> funcHelp(int substringLength, Set<String> names) {
+        HashMap<String, Integer> appearencePerStr = new HashMap<>();
         for(String name: names){
-            for (int index = 0; index < name.length() - substringLength + 1 ; index++) {
-                String substring = name.substring(index, substringLength + index);
-                if (appearencePerString.containsKey(substring))
-                    appearencePerString.put(substring, appearencePerString.get(substring) + 1);
+            for (int i = 0; i < name.length() - substringLength + 1 ; i++) {
+                String substring = name.substring(i, substringLength + i);
+                if (appearencePerStr.containsKey(substring))
+                    appearencePerStr.put(substring, appearencePerStr.get(substring) + 1);
                 else
-                    appearencePerString.put(substring, 1);
+                    appearencePerStr.put(substring, 1);
             }
         }
-        return appearencePerString;
+        return appearencePerStr;
     }
     private static void printStringAndCounter(HashMap<String, Integer> counterPerString) {
         for(Map.Entry<String, Integer> entry: counterPerString.entrySet()){
@@ -85,13 +82,13 @@ public class Main {
 
     public static List<String> countMaxString(int length){
         Set<String> namesCaseInsensitive = new HashSet<>();
-        for (String name: names)
+        for (String name: n)
             namesCaseInsensitive.add(name.toLowerCase());
-        HashMap<String, Integer> appearanceMap = countAllStringsByCaseSensitive(length, namesCaseInsensitive);
+        HashMap<String, Integer> appearanceMap = funcHelp(length, namesCaseInsensitive);
         return mostCommonKey(appearanceMap);
     }
     public static List<String> mostCommonKey(HashMap<String, Integer> appearanceMap){
-        List<String> mostCommonStrings = new LinkedList<>();
+        List<String> mostCommonStr = new LinkedList<>();
         int most = 0 ;
         for(Integer counter : appearanceMap.values()){
             if (counter > most)
@@ -99,15 +96,15 @@ public class Main {
         }
         for(String substringOfSizeLength: appearanceMap.keySet()){
             if(appearanceMap.get(substringOfSizeLength) == most)
-                mostCommonStrings.add(substringOfSizeLength);
+                mostCommonStr.add(substringOfSizeLength);
         }
-        return mostCommonStrings;
+        return mostCommonStr;
     }
 
     public static List<String> allIncludesString(String string){
         String stringCaseInsensitive = string.toLowerCase();
         List<String> namesInGivenString = new LinkedList<>();
-        for(String name: names){
+        for(String name: n){
             if(stringCaseInsensitive.contains(name.toLowerCase()))
                 namesInGivenString.add(name.toLowerCase());
         }
@@ -123,24 +120,30 @@ public class Main {
     public static String generateName(){
         String generated = "";
         char previousLetter = '\0';
-        for (int index = 0; index < longestLength; index++){
-            generated += findHighestProbabilityLetterByIndex(index, previousLetter);
+        for (int index = 0; index < longest_length; index++){
+            generated += findHighestProbabilityLetterByIndex(previousLetter);
             previousLetter = generated.charAt(index);
         }
         generated = generated.toUpperCase().charAt(0) + generated.substring(1);
         return generated;
     }
-    public static String findHighestProbabilityLetterByIndex(int indexInString, char previousLetter){
+    public static String findHighestProbabilityLetterByIndex(char previousLetter){
         HashMap<String, Integer> charsAppearence = new HashMap<>();
-        for (int index = 0; index < ENGLISH_ALPHABET_LENGTH; index++){
-            charsAppearence.put(String.valueOf((char)(index + A_ASCII_VALUE)), 0);
+        for (int index = 0; index < 26; index++){
+            charsAppearence.put(String.valueOf((char)(index + 97)), 0);
         }
-          for (String name : names) {
-              name = name.toLowerCase();
-              if (name.length() > indexInString) {
-                  if (indexInString == 0 || name.charAt(indexInString - 1) == previousLetter) {
-                      char current = name.charAt(indexInString);
-                      String currentChar = String.valueOf(current);
+        for (int index = 0;  index < 26; index++){
+            charsAppearence.put(String.valueOf((char)(index + 65)), 0);
+        }
+          for (String name : n) {
+              if(previousLetter == '\0'){
+                  String currentChar = String.valueOf(name.charAt(0));
+                  charsAppearence.put(currentChar, charsAppearence.get(currentChar) + 1);
+              }
+              else if (name.contains(String.valueOf(previousLetter))){
+                  int indexOfPreviousLetter = name.indexOf(previousLetter);
+                  if (name.length() > indexOfPreviousLetter +1) {
+                      String currentChar = String.valueOf(name.charAt(indexOfPreviousLetter + 1));
                       charsAppearence.put(currentChar, charsAppearence.get(currentChar) + 1);
                   }
               }
