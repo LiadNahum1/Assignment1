@@ -9,24 +9,30 @@ public class Main {
     public static void main(String[] args)
     {
         loadNamesFromFile();
-        switch(args[0]){
-            case "CountSpecificString":
-                System.out.println(countSpecificString(args[1]));
-                break;
-            case "CountAllStrings":
-                printStringAndCounter(countAllStrings(Integer.parseInt(args[1])));
-                break;
-            case "CountMaxString":
-                printResultedList(countMaxString(Integer.parseInt(args[1])));
-                break;
-            case "AllIncludesString":
-                printResultedList(allIncludesString(args[1]));
-                break;
-            case "GenerateName":
-                System.out.println(generateName());
-                break;
-            default:
-                System.out.println("Invalid function");
+        try {
+            switch (args[0]) {
+                case "CountSpecificString":
+                    System.out.println(countSpecificString(args[1]));
+                    break;
+                case "CountAllStrings":
+                    printStringAndCounter(countAllStrings(Integer.parseInt(args[1])));
+                    break;
+                case "CountMaxString":
+                    printResultedList(countMaxString(Integer.parseInt(args[1])));
+                    break;
+                case "AllIncludesString":
+                    printResultedList(allIncludesString(args[1]));
+                    break;
+                case "GenerateName":
+                    System.out.println(generateName());
+                    break;
+                default:
+                    System.out.println("Invalid function");
+            }
+        }
+        catch(Exception exception)
+        {
+            System.out.println("Invalid arguments");
         }
     }
 
