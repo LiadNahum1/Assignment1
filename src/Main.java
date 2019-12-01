@@ -47,7 +47,6 @@ public class Main {
                 n.add(name);
                 name = fr.readLine();
             }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -156,7 +155,8 @@ public class Main {
                       int indexOfPreviousLetter = substringName.indexOf(previousLetter);
                       if (substringName.length() > indexOfPreviousLetter + 1) {
                           String currentChar = String.valueOf(name.charAt(indexOfPreviousLetter + 1));
-                          charsAppearence.put(currentChar, charsAppearence.get(currentChar) + 1);
+                          if(charsAppearence.containsKey(currentChar))
+                              charsAppearence.put(currentChar, charsAppearence.get(currentChar) + 1);
                           substringName = substringName.substring(indexOfPreviousLetter + 1);
                       }
                       else
